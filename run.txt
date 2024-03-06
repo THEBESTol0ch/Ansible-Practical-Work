@@ -1,0 +1,3 @@
+ansible-playbook -i hosts.ini install_git.yml
+ansible-playbook -i hosts.ini clone_repo.yml
+ansible-playbook -i hosts.ini setup_nginx.yml

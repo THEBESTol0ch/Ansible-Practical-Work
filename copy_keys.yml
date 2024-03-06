@@ -1,0 +1,6 @@
+- name: Copy SSH keys
+  copy:
+    src: ./ssh_keys
+    dest: /home/ansible-worker/.ssh
+  become: true
+  when: ansible_user == 'ansible-worker'

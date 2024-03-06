@@ -1,0 +1,36 @@
+---
+- name: Install and configure Nginx
+  hosts: all
+  become: true
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'Ubuntu'
+
+    - name: Copy Nginx configuration file
+      copy:
+        src: ansible.iphilka.ru.conf
+        dest: /etc/nginx/sites-available/
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload Nginx
+      when: ansible_user == 'ansible-worker'
+
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx/sites-available/ansible.iphilka.ru.conf
+        dest: /etc/nginx/sites-enabled/ansible.iphilka.ru.conf
+        state: link
+      notify:
+        - Reload Nginx
+      when: ansible_user == 'ansible-worker'
+
+  handlers:
+    - name: Reload Nginx
+      systemd:
+        name: nginx
+        state: restarted
